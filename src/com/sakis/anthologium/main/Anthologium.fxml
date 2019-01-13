@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.sakis.anthologium.main.AnthologiumController">
+   <top>
+      <HBox prefWidth="1200.0" BorderPane.alignment="CENTER">
+         <children>
+            <ToolBar prefHeight="40.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+              <items>
+                  <JFXButton fx:id="photoOverviewButton" buttonType="RAISED" onAction="#handlePhotosButton" text="Photos">
+                     <graphic>
+                        <ImageView>
+                           <image>
+                              <Image url="@../images/photos.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton fx:id="actorsButton" buttonType="RAISED" onAction="#handleActorsButton" text="Actors">
+                     <graphic>
+                        <ImageView>
+                           <image>
+                              <Image url="@../images/actor.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton fx:id="songsButton" buttonType="RAISED" onAction="#handleSongsButton" text="Songs">
+                     <graphic>
+                        <ImageView>
+                           <image>
+                              <Image url="@../images/songs.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton fx:id="exitButton" buttonType="RAISED" onAction="#handleExitButton" text="Exit">
+                     <graphic>
+                        <ImageView>
+                           <image>
+                              <Image url="@../images/exit.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+              </items>
+            </ToolBar>
+            <ToolBar>
+              <items>
+                  <JFXButton fx:id="minimizeButton" buttonType="RAISED" onAction="#handleMinimizeButton" ripplerFill="GREY">
+                     <graphic>
+                        <ImageView>
+                           <image>
+                              <Image url="@../images/minimize.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+              </items>
+            </ToolBar>
+         </children>
+      </HBox>
+   </top>
+</BorderPane>
