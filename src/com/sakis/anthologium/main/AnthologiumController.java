@@ -32,9 +32,12 @@ public class AnthologiumController implements Initializable {
     private JFXButton minimizeButton;
     @FXML
     private BorderPane borderPane;
+    
+    private AnthologiumModel anthologiumModel;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.anthologiumModel = new AnthologiumModel();
     }
     
     @FXML
