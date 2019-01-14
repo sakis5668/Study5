@@ -48,7 +48,6 @@ public class PhotoModel {
 
         searchStringProperty.addListener((observable, oldValue, newValue) -> {
             try {
-                System.out.println(newValue);
                 readPhotoDataList(new SimpleStringProperty(newValue));
             } catch (IOException e1) {
                 e1.printStackTrace();

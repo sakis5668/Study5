@@ -13,7 +13,8 @@ import javafx.beans.property.SimpleIntegerProperty;
  * @author Sakis Tosounidis <sakis.tosounidis@gmail.com>
  */
 public class PhotoData {
-        private final IntegerProperty photoId;
+
+    private final IntegerProperty photoId;
     private byte[] image;
 
     /**

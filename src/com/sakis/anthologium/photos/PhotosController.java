@@ -13,6 +13,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
@@ -23,6 +25,8 @@ import javafx.scene.layout.VBox;
  * @author Sakis Tosounidis <sakis.tosounidis@gmail.com>
  */
 public class PhotosController implements Initializable {
+       
+    private PhotoModel model;
 
     @FXML
     private HBox root;
@@ -34,9 +38,8 @@ public class PhotosController implements Initializable {
     private VBox rightVBox;
     @FXML
     private TilePane tilePane;
-    
-    
-    private PhotoModel model;
+    @FXML
+    private ImageView bigImageView;
 
 
     /**
@@ -44,12 +47,10 @@ public class PhotosController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
-        
-
         this.model = new PhotoModel();
         tilePane.setPrefRows(1);
         populateTilePane(model.getCurrentImages());
+        populateBigImageView(this.model.getCurrentImage());
     }    
     
     
@@ -63,10 +64,23 @@ public class PhotosController implements Initializable {
             iv.setFitWidth(150);
             iv.setPreserveRatio(true);
             iv.setOnMouseClicked(e->{
-                // populateBigImageView(img);
+                populateBigImageView(img);
             });
             this.tilePane.getChildren().add(iv);
         }
+    }
+
+    @FXML
+    private void handleSearchFieldKeyPressed(KeyEvent event) {
+        if (event.getCode()==KeyCode.ENTER) {
+            this.model.setSearchStringProperty(searchTextField.getText());
+            populateTilePane(this.model.getCurrentImages());
+            populateBigImageView(this.model.getCurrentImage());
+        }
+    }
+    
+    private void populateBigImageView (Image image) {
+        this.bigImageView.setImage(image);
     }
 
 }
