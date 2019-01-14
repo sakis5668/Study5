@@ -54,6 +54,19 @@ public class PhotosController implements Initializable {
     }    
     
     
+    /**
+     * Populate the tilePane with photos from database
+     * Use therefore the ObservableList<Image> images from the Model 
+     * the Model updates the list by its function readPhotoDataList
+     * which is called by the listener of the searchStringProperty, 
+     * which in turn is updated by the searchTextField handler
+     * 
+     * This parameter (ObservableList<Image> images) could also be
+     * omitted, because it is always the same (from the Model)
+     * Maybe I will drop it in the future
+     * 
+     * @param images 
+     */
     public void populateTilePane(ObservableList<Image> images) {
         this.tilePane.getChildren().clear();
         this.tilePane.setPrefColumns(images.size());
@@ -70,6 +83,12 @@ public class PhotosController implements Initializable {
         }
     }
 
+    /**
+     * React on ENTER when inputting a searchString 
+     * update the searchStringProperty of the model, which then
+     * calls the listener to update the current photo list....
+     * @param event 
+     */
     @FXML
     private void handleSearchFieldKeyPressed(KeyEvent event) {
         if (event.getCode()==KeyCode.ENTER) {
@@ -79,6 +98,13 @@ public class PhotosController implements Initializable {
         }
     }
     
+    /**
+     * Populate the bigImageView with the current image 
+     * got it from the model
+     * this parameter maybe drop in future, because it is 
+     * always the same (from the model)
+     * @param image 
+     */
     private void populateBigImageView (Image image) {
         this.bigImageView.setImage(image);
     }

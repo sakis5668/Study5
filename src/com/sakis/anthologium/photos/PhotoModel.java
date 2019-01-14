@@ -122,7 +122,6 @@ public class PhotoModel {
         }
     }
 
-    
     /**
      * Return the CurrentImages list
      * @return 
@@ -131,16 +130,26 @@ public class PhotoModel {
         return currentImages;
     }
 
-
+    /**
+     * Setter for the searchStringProperty
+     * @param searchString 
+     */
     public void setSearchStringProperty(String searchString) {
         this.searchStringProperty.set(searchString);
     }
 
-
+    /**
+     * Getter for the currentPhotoData
+     * @return 
+     */
     public PhotoData getCurrentPhotoData() {
         return currentPhotoData;
     }
 
+    /**
+     * Getter for the current Image 
+     * @return 
+     */
     public Image getCurrentImage() {
         return this.currentImage;
     }
