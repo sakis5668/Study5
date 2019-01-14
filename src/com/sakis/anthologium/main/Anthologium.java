@@ -21,6 +21,7 @@ public class Anthologium extends Application {
         Scene scene = new Scene(root);
         scene.setFill(null);
         Anthologium.stage = stage;
+        stage.setTitle("Anthologium");
         stage.setScene(scene);
         stage.show();
     }
