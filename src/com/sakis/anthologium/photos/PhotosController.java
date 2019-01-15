@@ -6,11 +6,14 @@
 package com.sakis.anthologium.photos;
 
 import com.jfoenix.controls.JFXTextField;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -40,6 +43,8 @@ public class PhotosController implements Initializable {
     private TilePane tilePane;
     @FXML
     private ImageView bigImageView;
+    @FXML
+    private Label photoInfoLabel;
 
 
     /**
@@ -49,8 +54,9 @@ public class PhotosController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         this.model = new PhotoModel();
         tilePane.setPrefRows(1);
-        populateTilePane(model.getCurrentImages());
-        populateBigImageView(this.model.getCurrentImage());
+        populateTilePane();
+        populateBigImageView(new Image((InputStream)new ByteArrayInputStream(this.model.getCurrentPhotoData().getImage())));
+        photoInfoLabel.setText(this.model.getPhotoInfo(this.model.getCurrentPhotoData().getPhotoId()));
     }    
     
     
@@ -61,23 +67,22 @@ public class PhotosController implements Initializable {
      * which is called by the listener of the searchStringProperty, 
      * which in turn is updated by the searchTextField handler
      * 
-     * This parameter (ObservableList<Image> images) could also be
-     * omitted, because it is always the same (from the Model)
-     * Maybe I will drop it in the future
-     * 
      * @param images 
      */
-    public void populateTilePane(ObservableList<Image> images) {
+    public void populateTilePane() {
         this.tilePane.getChildren().clear();
-        this.tilePane.setPrefColumns(images.size());
-        for (int i=0; i<images.size(); i++) {
-            Image img = images.get(i);
+        this.tilePane.setPrefColumns(this.model.getPhotoDataList().size());
+        for (int i=0; i< this.model.getPhotoDataList().size(); i++) {
+            InputStream is = new ByteArrayInputStream(this.model.getPhotoDataList().get(i).getImage());
+            int photoId = this.model.getPhotoDataList().get(i).getPhotoId();
+            Image img = new Image(is);
             ImageView iv = new ImageView(img);
             iv.setFitHeight(150);
             iv.setFitWidth(150);
             iv.setPreserveRatio(true);
             iv.setOnMouseClicked(e->{
                 populateBigImageView(img);
+                photoInfoLabel.setText(this.model.getPhotoInfo(photoId));
             });
             this.tilePane.getChildren().add(iv);
         }
@@ -93,8 +98,9 @@ public class PhotosController implements Initializable {
     private void handleSearchFieldKeyPressed(KeyEvent event) {
         if (event.getCode()==KeyCode.ENTER) {
             this.model.setSearchStringProperty(searchTextField.getText());
-            populateTilePane(this.model.getCurrentImages());
-            populateBigImageView(this.model.getCurrentImage());
+            populateTilePane();
+            populateBigImageView(new Image((InputStream)new ByteArrayInputStream(this.model.getCurrentPhotoData().getImage())));
+            photoInfoLabel.setText(this.model.getPhotoInfo(this.model.getCurrentPhotoData().getPhotoId()));
         }
     }
     

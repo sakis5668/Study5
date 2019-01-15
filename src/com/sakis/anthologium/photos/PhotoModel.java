@@ -6,10 +6,12 @@
 package com.sakis.anthologium.photos;
 
 import com.sakis.anthologium.util.Database;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -24,18 +26,17 @@ import javafx.scene.image.Image;
  * @author Sakis Tosounidis <sakis.tosounidis@gmail.com>
  */
 public class PhotoModel {
+
     private Connection connection;
     private StringProperty searchStringProperty = new SimpleStringProperty("");
 
-
     private ObservableList<PhotoData> photoDataList;
+
     private ObservableList<PhotoActorData> photoActorDataList;
     private PhotoData currentPhotoData;
 
-    private ObservableList<Image> currentImages;
-    private Image currentImage;
+    private String photoInfoString;
 
-    
     /**
      * Constructor
      */
@@ -56,7 +57,6 @@ public class PhotoModel {
 
         photoDataList = FXCollections.observableArrayList();
         photoActorDataList = FXCollections.observableArrayList();
-        currentImages = FXCollections.observableArrayList();
 
         try {
             readPhotoDataList(this.searchStringProperty);
@@ -66,15 +66,67 @@ public class PhotoModel {
     }
 
     /**
-     * read data from database into PhotoDataList, CurrentPhotoData and
-     * CurrentImages
+     * Look up in the database the names of the actors shown in the photo and
+     * save the result in the variable photoInfoString
+     *
+     * @param photoId
+     */
+    public String getPhotoInfo(int photoId) {
+        String infoString = "";
+        try {
+            String sql = "select actor_photo.*, actor.lastname, actor.firstname\n" + "from actor_photo\n"
+                    + "inner join actor on actor_photo.actor_id = actor.actor_id\n" + "where photo_id=?\n";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, photoId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                if (!infoString.equals("")) {
+                    infoString += ", ";
+                }
+                infoString = infoString + resultSet.getString("firstname") + " " + resultSet.getString("lastname");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        if (!infoString.equals("")) {
+            return infoString;
+        } else {
+            return "No info";
+        }
+
+    }
+
+    /**
+     * Setter for the searchStringProperty
+     *
+     * @param searchString
+     */
+    public void setSearchStringProperty(String searchString) {
+        this.searchStringProperty.set(searchString);
+    }
+
+    /**
+     * Getter for the currentPhotoData
+     *
+     * @return
+     */
+    public PhotoData getCurrentPhotoData() {
+        return currentPhotoData;
+    }
+
+    public ObservableList<PhotoData> getPhotoDataList() {
+        return photoDataList;
+    }
+
+    /**
+     * Read the data from database depending on searchString and set the
+     * contents of the variables photoDataList and currentPhotoData
      *
      * @param searchString
      * @throws IOException
      */
     private void readPhotoDataList(StringProperty searchString) throws IOException {
         photoDataList.clear();
-        currentImages.clear();
 
         String sql = "";
 
@@ -96,18 +148,8 @@ public class PhotoModel {
             ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 int photoId = resultSet.getInt("photo_id");
-                InputStream is = resultSet.getBinaryStream("image");
-                currentImage = new Image(is);
-                currentImages.add(currentImage);
-
-                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-                int nRead;
-                byte[] data = new byte[1024];
-                while ((nRead = is.read(data, 0, data.length)) != -1) {
-                    buffer.write(data, 0, nRead);
-                }
-                buffer.flush();
-                byte[] imageBytes = buffer.toByteArray();
+                byte[] imageBytes = resultSet.getBytes("image");
+                InputStream is = new ByteArrayInputStream(imageBytes);
 
                 currentPhotoData = new PhotoData(
                         photoId,
@@ -122,36 +164,4 @@ public class PhotoModel {
         }
     }
 
-    /**
-     * Return the CurrentImages list
-     * @return 
-     */
-    public ObservableList<Image> getCurrentImages() {
-        return currentImages;
-    }
-
-    /**
-     * Setter for the searchStringProperty
-     * @param searchString 
-     */
-    public void setSearchStringProperty(String searchString) {
-        this.searchStringProperty.set(searchString);
-    }
-
-    /**
-     * Getter for the currentPhotoData
-     * @return 
-     */
-    public PhotoData getCurrentPhotoData() {
-        return currentPhotoData;
-    }
-
-    /**
-     * Getter for the current Image 
-     * @return 
-     */
-    public Image getCurrentImage() {
-        return this.currentImage;
-    }
-    
 }
